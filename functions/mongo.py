@@ -4,11 +4,11 @@ from pymongo import MongoClient
 import getpass
 import json
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 #Get Password
-password = getpass.getpass("Insert your AtlasMongoDB alexmendez password: ")
-connection = f"mongodb+srv://alexmendez:{password}@cluster0-ugfnh.mongodb.net/test?retryWrites=true&w=majority"
-
+connection = os.getenv('URLMONGO')
 #Connect to DB
 client = MongoClient(connection)
 def connectCollection(database, collection):
