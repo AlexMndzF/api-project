@@ -1,5 +1,4 @@
 from bottle import route, run, get, post, request
-import random
 import bson
 from functions.mongo import connectCollection
 from bson.json_util import dumps
@@ -30,9 +29,27 @@ def getChat(chat_id):
 
 @get("/users")
 def getusers():
-
     return dumps(collus.find({}))
 
+@post('/user/create')
+def newUser():
+    new_id = max(collus.distinct("User_id")) + 1
+    name = str(request.forms.get("name",f"User-{new_id}"))
+    new_user = {
+        "User_id": new_id,
+        "name": name
+    }
+    collus.insert_one(new_user)
+
+@post('/chat/create')
+def newChat():
+    new_id = max(collchat.distinct("Chat_id")) + 1
+    name = str(request.forms.get("name",f"chat-{new_id}"))
+    new_chat = {
+        "Chat_id": new_id,
+        "name": name
+    }
+    collchat.insert_one(new_chat)
 
 @post("/add")
 def add():
