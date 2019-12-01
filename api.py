@@ -4,6 +4,7 @@ from functions.mongo import connectCollection
 from bson.json_util import dumps,ObjectId, DatetimeRepresentation
 from datetime import datetime
 
+
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
 db, collchat = connectCollection('chats','chats')
@@ -11,6 +12,19 @@ db, collchat = connectCollection('chats','chats')
 @get("/test")
 def test():
     return {"CONNECTED"}
+@get("/")
+def info():
+    params = '''
+    <html>
+    <h1>INFORMATION:<h1>
+    Structure for make a post in the api:
+    {'idUser': integer ,
+    'userName': 'John Wick', #String
+    'idChat': 0, #integer
+    'text': 'Hey Mike, whats up??'}
+    <html>
+    '''
+    return params
 
 
 @get("/chat/<chat_id>/list")
@@ -65,7 +79,6 @@ def add():
     'userName': 'John Wick',
     'idMessage': 0,
     'idChat': 0,
-    'datetime': '2019-10-17 10:15:41',
     'text': 'Hey Mike, whats up??'}
     
     '''
@@ -98,25 +111,6 @@ def add():
     return dumps(params)
 
 
-
-
-'''
-def addChat(self,chat):
-    
-    This is the supported data structure, the idUser is a field that take the objetid from the user collection.
-    {'idUser': ,
-    'userName': 'John Wick',
-    'idMessage': 0,
-    'idChat': 0,
-    'datetime': '2019-10-17 10:15:41',
-    'text': 'Hey Mike, whats up??'}
-    
-    coll
-    if chat['userName']
-    a=collection.insert_one(chat)
-    print("Inserted", a.inserted_id)
-    return a.inserted_id
-    '''
 
 
 run(host='0.0.0.0', port=8080)
