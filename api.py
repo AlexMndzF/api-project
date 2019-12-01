@@ -1,7 +1,9 @@
 from bottle import route, run, get, post, request
 import bson
 from functions.mongo import connectCollection
-from bson.json_util import dumps
+from bson.json_util import dumps,ObjectId, DatetimeRepresentation
+from datetime import datetime
+
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
 db, collchat = connectCollection('chats','chats')
@@ -39,9 +41,9 @@ def newUser():
         "User_id": new_id,
         "name": name
     }
-    '''collus.insert_one(new_user)
+    collus.insert_one(new_user)
     userid_obj = list(collus.find({"User_id":new_id}))[0].get('_id')
-    return userid_obj'''
+    return dumps(userid_obj)
 
 @post('/chat/create')
 def newChat():
@@ -51,9 +53,9 @@ def newChat():
         "Chat_id": new_id,
         "name": name
     }
-    '''collchat.insert_one(new_chat)
+    collchat.insert_one(new_chat)
     chatid_obj = list(collchat.find({ "Chat_id": new_id}))[0].get('_id')
-    return chatid_obj'''
+    return dumps(chatid_obj)
 
 @post("/message/add")
 def add():
@@ -72,25 +74,28 @@ def add():
     if len(user) == 0:
     #create user
         idu = newUser()
+        print(idu)
     else:
         userid = user[0].get('User_id')
         idu = list(collus.find({'User_id':userid}))[0].get('_id')
-    if len(chat):
+        print(idu)
+    if len(chat) ==0:
         idChat = newChat()
+        print(idChat)
     else:
+        print(chat)
         chatid = chat[0].get('Chat_id')
         idChat = list(collchat.find({'Chat_id':chatid}))[0].get('_id')
+        print(idChat)
     
-    name=request.forms.get("userName")
-    idmess = request.forms.get('idMessage')
-    time = request.forms.get('datetime')
-    text = request.forms.get('text')
-    return {'idUser': idu ,
-    'userName': name,
-    'idMessage': idmess,
+    params = {'idUser': idu ,
+    'userName': list(collus.find({'_id':idu}))[0].get('name'),
+    'idMessage': max(coll.distinct('idMessage')) + 1,
     'idChat': idChat,
-    'datetime': time,
-    'text': text}
+    'datetime':datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    'text': request.forms.get('text')}
+    coll.insert_one(params)
+    return dumps(params)
 
 
 
