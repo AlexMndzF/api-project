@@ -34,12 +34,14 @@ def getusers():
 @post('/user/create')
 def newUser():
     new_id = max(collus.distinct("User_id")) + 1
-    name = str(request.forms.get("name",f"User-{new_id}"))
+    name = str(request.forms.get("userName",f"User-{new_id}"))
     new_user = {
         "User_id": new_id,
         "name": name
     }
-    collus.insert_one(new_user)
+    '''collus.insert_one(new_user)
+    userid_obj = list(collus.find({"User_id":new_id}))[0].get('_id')
+    return userid_obj'''
 
 @post('/chat/create')
 def newChat():
@@ -49,9 +51,11 @@ def newChat():
         "Chat_id": new_id,
         "name": name
     }
-    collchat.insert_one(new_chat)
+    '''collchat.insert_one(new_chat)
+    chatid_obj = list(collchat.find({ "Chat_id": new_id}))[0].get('_id')
+    return chatid_obj'''
 
-@post("/add")
+@post("/message/add")
 def add():
     '''
     This is the supported data structure, the idUser is a field that take the objetid from the user collection.
@@ -63,10 +67,22 @@ def add():
     'text': 'Hey Mike, whats up??'}
     
     '''
-    idu = request.forms.get('idUser')
+    user = list(collus.find({'User_id':int(request.forms.get('idUser'))}))
+    chat = list(collchat.find({'Chat_id':int(request.forms.get('idChat'))}))
+    if len(user) == 0:
+    #create user
+        idu = newUser()
+    else:
+        userid = user[0].get('User_id')
+        idu = list(collus.find({'User_id':userid}))[0].get('_id')
+    if len(chat):
+        idChat = newChat()
+    else:
+        chatid = chat[0].get('Chat_id')
+        idChat = list(collchat.find({'Chat_id':chatid}))[0].get('_id')
+    
     name=request.forms.get("userName")
     idmess = request.forms.get('idMessage')
-    idChat = request.forms.get('idChat')
     time = request.forms.get('datetime')
     text = request.forms.get('text')
     return {'idUser': idu ,
