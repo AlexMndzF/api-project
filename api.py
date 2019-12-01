@@ -3,6 +3,10 @@ import bson
 from functions.mongo import connectCollection
 from bson.json_util import dumps,ObjectId, DatetimeRepresentation
 from datetime import datetime
+from textblob import TextBlob
+import json
+import matplotlib.pyplot as plt
+import webbrowser
 
 
 db, coll = connectCollection('chats','messages')
@@ -37,15 +41,46 @@ def getChat(chat_id):
     chat_data = list(coll.find({'idChat':chat_obj_id}))
     ret = {}
     for i in range(len(chat_data)):
+        idmess = chat_data[i].get('idMessage')
         name = chat_data[i].get('userName')
         message = chat_data[i].get('text')
-        date = chat_data[i].get('datetime')
-        ret[f'{name}_{date}'] = message        
-    return ret
+        ret[f'mess-{idmess}'] = {
+            name:message
+
+        }        
+    return dumps(ret)
 
 @get("/users")
 def getusers():
     return dumps(collus.find({}))
+
+
+@get("/chat/<chat_id>/sentiment")
+def sentiment(chat_id):
+    chat = getChat(chat_id)
+    chat =  json.loads(chat)
+    polarity = []
+    subjectivity = []
+    for k in chat:
+        for key in chat[k]:
+            data2 = chat[k][key]
+            sent = TextBlob(data2).sentiment
+            polarity.append(sent.polarity)
+            subjectivity.append(sent.subjectivity)
+    polarityavg = sum(polarity)/len(polarity)
+    subjectivityavg = sum(subjectivity)/len(subjectivity)
+    chat['sentiment'] = {
+    'polarity':polarityavg,
+    'subjectivity':subjectivityavg
+    }
+    plt.plot(polarity)
+    plt.savefig('polarity.png')
+    html = '<img src=\'polarity.png\'>'
+    with open('polarity.html','w') as f:
+        f.write(html)
+    webbrowser.open('./polarity.html', new=2)
+    return dumps(chat)
+    
 
 @post('/user/create')
 def newUser():
