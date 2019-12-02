@@ -89,6 +89,9 @@ def sentiment(chat_id):
 @get('/user/create')
 def insert_name():
     return template('user')
+@get("/message/add")
+def inser_message():
+    return template('message')
     
 
 @post('/user/create')

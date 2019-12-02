@@ -3,7 +3,7 @@
         <div style="display: flex;justify-content: center;margin-top: 10vh;">
             <table border="3", cellspacing="5" width='700vw'style='background-color: yellowgreen'>
                 <tr><th><h1>{{title}}</h1></th></tr>             
-                <tr><td style="text-align: center;"><h3>POST MESSAGE</h3></td></tr>                
+                <tr><td style="text-align: center;"><h3>POST <a href="/message/add">MESSAGE</a></h3></td></tr>                
                 <tr><td style="padding-left: 20px;">
                     <p>URL = /message/add</p>
                     <p>Params = {'idUser': <strong>#integer</strong> ,</p>
@@ -13,7 +13,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: center;">
-                        <h3>POST USER</h3>
+                        <h3>POST <a href="/user/create">USER</a></h3>
                     </td>
                 </tr>
                 <tr>
@@ -66,8 +66,22 @@
                             <p>Return the chat with the polarity and subjectivity of the chat.</p>
                         </td>
                     </tr>
+                    <tr>
+                            <td style="text-align: center;">
+                                <h3>GET USER RECOMENDATIONS</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 20px;">
+                                <p>URL = /user/<name>/recommend</p>
+                                <p>Returns the three recommendations.</p>
+                            </td>
+                        </tr>
                     
             </table>
         </div>
     </body>
 </html>
+
+
+/user/<name>/recommend
