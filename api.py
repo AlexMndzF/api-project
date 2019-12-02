@@ -5,7 +5,7 @@ from bson.json_util import dumps,ObjectId, DatetimeRepresentation
 from datetime import datetime
 from textblob import TextBlob   
 import json
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import webbrowser
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd

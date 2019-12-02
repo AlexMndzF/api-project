@@ -1,8 +1,14 @@
 bottle==0.12.17
 DateTime==4.3
 json5==0.8.5
-matplotlib==3.1.1
+numpy==1.17.4
 textblob==0.15.3
 pandas==0.25.3
 nltk==3.4.5
-numpy==1.17.4
+bson==0.5.8
+pymongo==3.9.0
+python-dotenv==0.10.3
+dnspython==1.16.0
+sklearn==0.0
+scikit-learn==0.21.3
+

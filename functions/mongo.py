@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
 from pymongo import MongoClient
-import getpass
-import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
