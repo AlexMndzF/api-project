@@ -1,5 +1,0 @@
-{"_id":{"$oid":"5de262ec424383d703c69e3e"},"Chat_id":{"$numberInt":"3"},"name":"chat-3"}
-{"_id":{"$oid":"5de262ec424383d703c69e3f"},"Chat_id":{"$numberInt":"0"},"name":"chat-0"}
-{"_id":{"$oid":"5de262ec424383d703c69e40"},"Chat_id":{"$numberInt":"4"},"name":"chat-4"}
-{"_id":{"$oid":"5de262ec424383d703c69e41"},"Chat_id":{"$numberInt":"2"},"name":"chat-2"}
-{"_id":{"$oid":"5de262ec424383d703c69e42"},"Chat_id":{"$numberInt":"1"},"name":"chat-1"}
