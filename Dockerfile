@@ -1,7 +1,13 @@
 FROM python:3.7-slim
-ADD . .
-RUN pip3 install -r requirements.txt
-RUN adduser --disabled-password myuser
-USER myuser 
-EXPOSE 8080
-CMD ["python3","-u","api.py"]
+
+# Copy the contents of the current directory inside the docker image
+ADD . /app
+
+# Set the home of the docker image
+WORKDIR /app
+
+# Install the requirements 
+RUN pip3 install -r requirements.txt 
+
+# Command to run when starting the container
+CMD ["python3","-u","app.py"]
