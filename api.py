@@ -148,6 +148,7 @@ def add():
 
 @get("/user/<name>/recommend")
 def recomenduser(name):
+    n=name
     data = list(coll.find({}))
     if name not in list(set([e['userName'] for e in data])):
         error = 'Sorry, this user does not exist in the database'
@@ -168,7 +169,7 @@ def recomenduser(name):
     similarity_matrix = distance(df, df)
     sim_df = pd.DataFrame(similarity_matrix, columns=TokensDict.keys(), index=TokensDict.keys())
     np.fill_diagonal(sim_df.values, 0)
-    return {'recommended_users': [e for e in list(sim_df[name].sort_values(ascending=False)[1:4].index)]}
+    return {'recommended_users': [e for e in list(sim_df[n].sort_values(ascending=False)[0:3].index)]}
 
 
 
