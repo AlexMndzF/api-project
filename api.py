@@ -92,6 +92,9 @@ def insert_name():
 @get("/message/add")
 def inser_message():
     return template('message')
+@get('/chat/create')
+def inser_chat():
+    return template('chat')
     
 
 @post('/user/create')
