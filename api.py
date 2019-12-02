@@ -1,44 +1,25 @@
-from bottle import route, run, get, post, request
+from bottle import route, run, get, post, request, template
 import bson
 from functions.mongo import connectCollection
 from bson.json_util import dumps,ObjectId, DatetimeRepresentation
 from datetime import datetime
-from textblob import TextBlob
+from textblob import TextBlob   
 import json
 import matplotlib.pyplot as plt
 import webbrowser
-
 
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
 db, collchat = connectCollection('chats','chats')
 
+
 @get("/test")
 def test():
     return {"CONNECTED"}
+
 @get("/")
-def info():
-    params = '''
-<html>
-    <body style="background-color: rgb(221, 221, 221);">
-        <div style="display: flex;justify-content: center;margin-top: 10vh;">
-            <table border="3", cellspacing="5" width='700vw'style='background-color: yellowgreen'>
-                <tr><th><h1>INFORMATION</h1></th></tr>             
-                <tr><td style="text-align: center;"><h3>Structure for make a message post</h3></td></tr>                
-                <tr><td style="padding-left: 20px;"><p>{'idUser': <strong>#integer</strong> ,</p>
-                <p>'userName': 'John Wick', <strong>#String</strong></p>
-                <p>'idChat': 0, <strong>#integer</strong></p>
-                <p>'text': 'Hey Mike, whats up??'}<p></td></tr>
-                <tr><td style="text-align: center;"><h3>Structure for make user post </h3></td></tr>
-                <tr><td style="padding-left: 20px;"><p>{'userName':'Toni stark'} #The name is optional </p></td></tr>             
-                <tr><td style="text-align: center;"><h3>Structure for make a chat post</h3></td></tr>
-                <tr><td style="padding-left: 20px;"><p>{'name': 'Jon Snow-khaleesi'} #The name is optional</p></td></tr>
-            </table>
-        </div>
-    </body>
-</html>
-    '''
-    return params
+def home():
+    return template('info', title="INFORMATION")
 
 
 @get("/chat/<chat_id>/list")
@@ -71,7 +52,9 @@ def sentiment(chat_id):
     chat =  json.loads(chat)
     polarity = []
     subjectivity = []
+    #labels = [] 
     for k in chat:
+        #labels.append(k)
         for key in chat[k]:
             data2 = chat[k][key]
             sent = TextBlob(data2).sentiment
@@ -83,12 +66,19 @@ def sentiment(chat_id):
     'polarity':polarityavg,
     'subjectivity':subjectivityavg
     }
+    '''time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     plt.plot(polarity)
-    plt.savefig('polarity.png')
-    html = '<img src=\'polarity.png\'>'
-    with open('polarity.html','w') as f:
+    plt.plot(subjectivity)
+    plt.legend(['Polarity','subjectivit'])
+    plt.xlabel('Messages')
+    plt.ylabel('Value')
+    plt.xticks(range(len(subjectivity)),labels=labels, rotation=90)
+    name = f'Sentiment_{time}'
+    plt.savefig(f'{name}.png')
+    html = f'<img src=\'{name}.png\'>'
+    with open(f'{name}.html','w') as f:
         f.write(html)
-    webbrowser.open('./polarity.html', new=2)
+    webbrowser.open(f'./{name}.html', new=2)'''
     return dumps(chat)
     
 
