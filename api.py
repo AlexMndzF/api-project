@@ -7,6 +7,12 @@ from textblob import TextBlob
 import json
 import matplotlib.pyplot as plt
 import webbrowser
+from nltk.tokenize import RegexpTokenizer
+import pandas as pd
+from nltk.corpus import stopwords
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity as distance
 
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
@@ -80,6 +86,9 @@ def sentiment(chat_id):
         f.write(html)
     webbrowser.open(f'./{name}.html', new=2)'''
     return dumps(chat)
+@get('/user/create')
+def insert_name():
+    return template('user')
     
 
 @post('/user/create')
@@ -108,15 +117,6 @@ def newChat():
 
 @post("/message/add")
 def add():
-    '''
-    This is the supported data structure, the idUser is a field that take the objetid from the user collection.
-    {'idUser': ,
-    'userName': 'John Wick',
-    'idMessage': 0,
-    'idChat': 0,
-    'text': 'Hey Mike, whats up??'}
-    
-    '''
     user = list(collus.find({'User_id':int(request.forms.get('idUser'))}))
     chat = list(collchat.find({'Chat_id':int(request.forms.get('idChat'))}))
     if len(user) == 0:
@@ -144,6 +144,32 @@ def add():
     'text': request.forms.get('text')}
     coll.insert_one(params)
     return dumps(params)
+
+
+@get("/user/<name>/recommend")
+def recomenduser(name):
+    data = list(coll.find({}))
+    if name not in list(set([e['userName'] for e in data])):
+        error = 'Sorry, this user does not exist in the database'
+        print({'Exception':error}) 
+    tokenizer = RegexpTokenizer(r'\w+')
+    stop_words = set(stopwords.words('english'))       
+    TokensDict = {}
+    for name in list(set([e['userName'] for e in data])):
+        usersData = list(coll.find({'userName': name}))
+        usersTokens = [tokenizer.tokenize(e['text']) for e in usersData]
+        usersTokens_clean = [word for message in usersTokens for word in message if word not in stop_words]
+        TokensDict[name] = ' '.join(usersTokens_clean)
+    count_vectorizer = CountVectorizer()
+    count_vectorizer = CountVectorizer()
+    sparse_matrix = count_vectorizer.fit_transform(TokensDict.values())
+    Tokens_term_matrix = sparse_matrix.todense()
+    df = pd.DataFrame(Tokens_term_matrix,columns=count_vectorizer.get_feature_names(),index=TokensDict.keys())
+    similarity_matrix = distance(df, df)
+    sim_df = pd.DataFrame(similarity_matrix, columns=TokensDict.keys(), index=TokensDict.keys())
+    np.fill_diagonal(sim_df.values, 0)
+    return {'recommended_users': [e for e in list(sim_df[name].sort_values(ascending=False)[1:4].index)]}
+
 
 
 
