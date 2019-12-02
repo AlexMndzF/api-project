@@ -1,0 +1,4 @@
+bottle==0.12.17
+DateTime==4.3
+json5==0.8.5
+matplotlib==3.1.1
