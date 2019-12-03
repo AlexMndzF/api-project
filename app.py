@@ -5,7 +5,6 @@ from bson.json_util import dumps,ObjectId, DatetimeRepresentation
 from datetime import datetime
 from textblob import TextBlob   
 import json
-#import matplotlib.pyplot as plt
 import webbrowser
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
@@ -72,19 +71,6 @@ def sentiment(chat_id):
     'polarity':polarityavg,
     'subjectivity':subjectivityavg
     }
-    '''time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    plt.plot(polarity)
-    plt.plot(subjectivity)
-    plt.legend(['Polarity','subjectivit'])
-    plt.xlabel('Messages')
-    plt.ylabel('Value')
-    plt.xticks(range(len(subjectivity)),labels=labels, rotation=90)
-    name = f'Sentiment_{time}'
-    plt.savefig(f'{name}.png')
-    html = f'<img src=\'{name}.png\'>'
-    with open(f'{name}.html','w') as f:
-        f.write(html)
-    webbrowser.open(f'./{name}.html', new=2)'''
     return dumps(chat)
 @get('/user/create')
 def insert_name():
@@ -107,7 +93,7 @@ def newUser():
     }
     collus.insert_one(new_user)
     userid_obj = list(collus.find({"User_id":new_id}))[0].get('_id')
-    return dumps(userid_obj)
+    return userid_obj
 
 @post('/chat/create')
 def newChat():
@@ -137,13 +123,12 @@ def add():
         idChat = newChat()
         print(idChat)
     else:
-        print(chat)
         chatid = chat[0].get('Chat_id')
         idChat = list(collchat.find({'Chat_id':chatid}))[0].get('_id')
         print(idChat)
-    
+    print(ObjectId(idu))
     params = {'idUser': idu ,
-    'userName': list(collus.find({'_id':idu}))[0].get('name'),
+    'userName': list(collus.find({"_id":idu}))[0].get('name'),
     'idMessage': max(coll.distinct('idMessage')) + 1,
     'idChat': idChat,
     'datetime':datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
