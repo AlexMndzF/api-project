@@ -6,14 +6,15 @@ from datetime import datetime
 from textblob import TextBlob   
 import json
 import webbrowser
+import nltk
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
-from nltk.corpus import stopwords, nltk.download
+from nltk.corpus import stopwords
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as distance
 import os
-
+nltk.download('stopwords')
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
 db, collchat = connectCollection('chats','chats')
