@@ -8,10 +8,11 @@ import json
 import webbrowser
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, nltk.download
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as distance
+import os
 
 db, coll = connectCollection('chats','messages')
 db, collus = connectCollection('chats','users')
@@ -165,5 +166,7 @@ def recomenduser(name):
 
 
 
-
-run(host='0.0.0.0', port=8080)
+port = int(os.getenv('PORT', 8080))
+host = os.getenv('IP','0.0.0.0')
+run(host=host, port=port, debug=True)
+#run(host='0.0.0.0', port=8080)
