@@ -1,4 +1,4 @@
-bottle==0.12.17
+bottle==0.12.20
 DateTime==4.3
 json5==0.8.5
 numpy==1.17.4
