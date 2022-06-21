@@ -1,7 +1,7 @@
 bottle==0.12.17
 DateTime==4.3
 json5==0.8.5
-numpy==1.17.4
+numpy==1.22.0
 textblob==0.15.3
 pandas==0.25.3
 nltk==3.4.5
