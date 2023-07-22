@@ -4,7 +4,7 @@ json5==0.8.5
 numpy==1.17.4
 textblob==0.15.3
 pandas==0.25.3
-nltk==3.4.5
+nltk==3.6.6
 bson==0.5.8
 pymongo==3.9.0
 python-dotenv==0.10.3
